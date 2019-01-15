@@ -37,7 +37,7 @@ int main(int argc, char const *argv[])
     	// waitpid(parent, &status, 0);
     	wait(&status);
     	printf("Reaped process %d\n", WEXITSTATUS(status));
-		getchar();
+		// getchar();
     }
 	return 0;
 }

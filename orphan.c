@@ -9,12 +9,11 @@
 int main(int argc, char const *argv[])
 {
 	pid_t pid = fork();
-	if(pid == 0){
-		printf("I am the child and i will die.\n");
+	if(pid > 0){
 		return 0;
 	}
 	sleep(10);
-	// printf("\n");
+	printf("Still running\n");
 	// int st;
 	// waitpid(pid, &st, 0);
 	return 0;
