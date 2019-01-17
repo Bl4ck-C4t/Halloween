@@ -12,8 +12,10 @@ int main(int argc, char const *argv[])
 	if(pid > 0){
 		return 0;
 	}
-	sleep(10);
+	// sleep(6);
 	printf("Still running\n");
+	setsid();
+	sleep(5);
 	// int st;
 	// waitpid(pid, &st, 0);
 	return 0;

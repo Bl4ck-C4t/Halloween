@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 
 
@@ -16,8 +17,15 @@ int main(int argc, char const *argv[])
 			printf("Alive\n");
 			sleep(3);
 		}*/
-		sleep(10);
+		sleep(5);
+		printf("Ded.\n");
 		return 0;
 	}
+	// pid_t pd = waitpid(pid, NULL, WNOWAIT);
+	// siginfo_t pd;
+	// waitid(P_ALL, -1, &pd, WNOWAIT);
+	// printf("pd: %d\n", pd);
+	// printf("pd: %d\n", pd.si_pid);
+	// getchar();
 	return 0;
 }

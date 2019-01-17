@@ -24,8 +24,7 @@ static void skeleton_daemon()
         exit(EXIT_SUCCESS);
 
     /* On success: The child process becomes session leader */
-    if (setsid() < 0)
-        exit(EXIT_FAILURE);
+    
 
     // signal(SIGCHLD, SIG_IGN);
     // signal(SIGHUP, SIG_IGN);
@@ -40,19 +39,26 @@ static void skeleton_daemon()
     /* Success: Let the parent terminate */
     if (pid > 0)
         exit(EXIT_SUCCESS);
+
+    if (setsid() < 0)
+        exit(EXIT_FAILURE);
     // prctl(PR_SET_CHILD_SUBREAPER);
 
     /* Set new file permissions */
-    // umask(0);
+    umask(0);
 
     /* Change the working directory to the root directory */
     /* or another appropriated directory */
-    // chdir("/");
+    chdir("/");
+    
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
 
     /* Close all open file descriptors */
 
     /* Open the log file */
-    openlog ("firstdaemon", LOG_PID, LOG_DAEMON);
+    openlog ("FirstDemon", LOG_PID, LOG_DAEMON);
 }
 
 int main()

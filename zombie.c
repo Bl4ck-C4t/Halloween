@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
 		printf("I am the child and i will die.\n");
 		return 0;
 	}
-	sleep(10);
+	sleep(5);
 	// printf("\n");
 	// int st;
 	// waitpid(pid, &st, 0);

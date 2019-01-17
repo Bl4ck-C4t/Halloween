@@ -9,6 +9,13 @@
 #include <sys/wait.h>
 #include <syslog.h>
 
+// volatile int status;
+void handle_zombies(){
+    int status = -1;
+    pid_t pid = waitpid(-1, &status, 0);
+    printf("Received SIGCHILD with pid %d, status: %d\n", pid, status);
+}
+
 int main(int argc, char const *argv[])
 {
 	prctl(PR_SET_CHILD_SUBREAPER);
@@ -23,21 +30,27 @@ int main(int argc, char const *argv[])
     	} 
     		printf("I am the child. my pid is %d\n", getpid());
 	    	printf("My dad is %d\n", getppid());
-    		sleep(5);
-    		printf("My new dad is %d\n", getppid());
+    		sleep(10);
+    		// printf("My new dad is %d\n", getppid());
 	    	return 13;
     	
 
     }
     else{
     	int status;
-    	waitpid(parent, &status, 0);
+        waitpid(parent, &status, 0);
+        printf("Reaped process %d\n", WEXITSTATUS(status));
+        // signal(SIGCHLD, handle_zombies);
+
+
+        // getchar();
+        // waitpid(parent, &status, 0);
+        getchar();
+        wait(&status);
+
+        // waitid(P_PGID, -1, NULL, WNOWAIT)
     	printf("Reaped process %d\n", WEXITSTATUS(status));
-    	// getchar();
-    	// waitpid(parent, &status, 0);
-    	wait(&status);
-    	printf("Reaped process %d\n", WEXITSTATUS(status));
-		// getchar();
+		getchar();
     }
 	return 0;
 }
