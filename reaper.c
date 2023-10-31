@@ -9,7 +9,12 @@
 #include <sys/wait.h>
 #include <syslog.h>
 
-// volatile int status;
+
+/* The system would burn, the resources will blow */
+/* The reaper takes all that has left him it's toll */
+/* He waits for the children and heeds to their call */
+/* When status codes come, resources will flow */
+
 void handle_zombies(){
     int status = -1;
     pid_t pid = waitpid(-1, &status, 0);
@@ -18,7 +23,6 @@ void handle_zombies(){
 
 int main(int argc, char const *argv[])
 {
-	prctl(PR_SET_CHILD_SUBREAPER);
     printf("I am reaper, my pid is %d, my dad is %d\n", getpid(), getppid());
     pid_t parent = fork();
     if (parent == 0){
@@ -26,31 +30,33 @@ int main(int argc, char const *argv[])
     	if(child > 0){
     		printf("I am parent, my pid is %d\n", getpid());
     		sleep(3);
-    		return 20;
-    	} 
-    		printf("I am the child. my pid is %d\n", getpid());
-	    	printf("My dad is %d\n", getppid());
-    		sleep(10);
-    		// printf("My new dad is %d\n", getppid());
-	    	return 13;
+    		return 15;
+    	}
+
+        child = fork();
+        if(child > 0){
+            sleep(5);
+            return 20;
+        }
+
+		printf("I am the child. my pid is %d\n", getpid());
+    	printf("My dad is %d\n", getppid());
+		sleep(7);
+		// printf("My new dad is %d\n", getppid());
+    	return 13;
     	
 
     }
     else{
+        prctl(PR_SET_CHILD_SUBREAPER, 1);
     	int status;
-        waitpid(parent, &status, 0);
-        printf("Reaped process %d\n", WEXITSTATUS(status));
-        // signal(SIGCHLD, handle_zombies);
-
-
-        // getchar();
-        // waitpid(parent, &status, 0);
-        getchar();
         wait(&status);
+        printf("Reaped process, got soul: %d\n", WEXITSTATUS(status));
+        wait(&status);
+        printf("Reaped process, got soul: %d\n", WEXITSTATUS(status));
+        wait(&status);
+        printf("Reaped process, got soul: %d\n", WEXITSTATUS(status));
 
-        // waitid(P_PGID, -1, NULL, WNOWAIT)
-    	printf("Reaped process %d\n", WEXITSTATUS(status));
-		getchar();
     }
 	return 0;
 }

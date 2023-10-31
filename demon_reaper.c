@@ -9,6 +9,11 @@
 #include <sys/wait.h>
 #include <syslog.h>
 
+/* He's stood there unyielding, observing, uncertain */
+/* No proccess, but him, could carry such burden */
+/* The codes of the damned and the orphaned he reaps */
+/* The system of clutter and death he now cleans */
+
 static void skeleton_daemon()
 {
     pid_t pid;
@@ -43,7 +48,7 @@ static void skeleton_daemon()
         exit(EXIT_SUCCESS);
 
     
-    // prctl(PR_SET_CHILD_SUBREAPER);
+    prctl(PR_SET_CHILD_SUBREAPER, 1); // become reaper
 
     /* Set new file permissions */
     umask(0);
@@ -62,15 +67,17 @@ static void skeleton_daemon()
     openlog("TheReaper", LOG_PID, LOG_DAEMON);
 }
 
+
 void handle_zombies(){
 	int status;
-    pid_t pid = waitpid(-1, &status, 0);
-    // printf("Received SIGCHILD with pid %d, status: %d\n", pid, status);
+    pid_t pid = wait(&status);
+    char buff[300];
+    sprintf(buff, "Reaped process with pid %d, status: %d\n", pid, status);
+    syslog(LOG_NOTICE, buff);
 }
 
 int main()
 {
-	prctl(PR_SET_CHILD_SUBREAPER); // Make a reaper
     skeleton_daemon(); // turn into demon
 
     syslog (LOG_NOTICE, "The Reaper is here.");
@@ -79,21 +86,18 @@ int main()
     	signal(SIGCHLD, handle_zombies);
     }
     if(pid == 0){
-    	char * prog = "/usr/bin/gnome-terminal";
+    	char * prog = "/home/bl4ckc4t/Halloween/graveyard"; // point this to the graveyard
     	execl(prog, prog, (char*)NULL);
     	sleep(5);
+        syslog(LOG_NOTICE, "Terminated\n");
     	return 0;
     }
-    // int stat;
-    // wait(&stat);
-    
-    while (1)
-    {
-        //TODO: Insert daemon code here.
-        
-        sleep (20);
-        break;
-    }
+
+    int status;
+
+    handle_zombies(); // reap direct child
+
+    sleep(20);
 
     syslog (LOG_NOTICE, "The Reaper is gone.");
     closelog();

@@ -14,14 +14,19 @@ int main(int argc, char const *argv[])
 	/* For it's return to be reached, how long will it take? */
 
 	pid_t pid = fork();
-	if(pid > 0){
-		sleep(2);
+	if(pid == 0){
+		pid_t pid = fork();
+		if(pid > 0){
+			sleep(2);
+			return 0;
+		}
+		setsid();
+		sleep(5);
 		return 0;
 	}
 	// sleep(6);
 	printf("Still running\n");
-	setsid();
-	sleep(5);
+	sleep(8);
 	// int st;
 	// waitpid(pid, &st, 0);
 	return 0;

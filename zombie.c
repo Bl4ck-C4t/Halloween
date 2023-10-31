@@ -8,9 +8,14 @@
 
 int main(int argc, char const *argv[])
 {
+	/* A child dies, but the parent, uncaring */
+	/* Dying before he retrives his child's code */
+	/* The reaper, undying, from the burden he's bearing */
+	/* He must now take care of his soul */
 	pid_t pid = fork();
 	if(pid == 0){
 		printf("I am the child and i will die.\n");
+		sleep(2);
 		return 0;
 	}
 	sleep(5);
